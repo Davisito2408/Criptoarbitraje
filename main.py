@@ -29,6 +29,7 @@ async def main():
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("register_exchange", register_exchange))
+    application.add_handler(CommandHandler("scan", scan_opportunities))
     
     # Start bot
     await application.run_polling()
