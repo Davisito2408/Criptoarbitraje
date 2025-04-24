@@ -43,10 +43,10 @@ Activa el trading automático
 ⛔ /disable_auto  
 Desactiva el trading automático
 
-🔐 /add_dex_wallet <clave_privada>  
+🔐 /add_dex_wallet <nombre_wallet> <clave_privada> <estado_kyc>  
 Agrega una wallet descentralizada (DEX)
 
-🏛️ /add_cex_wallet <exchange> <api_key> <secret>  
+🏛️ /add_cex_wallet <exchange> <nombre_wallet> <api_key> <secret> <contraseña>  
 Agrega una wallet de un exchange centralizado (CEX)
 
 💰 /balance <wallet_id>  
@@ -108,9 +108,9 @@ async def update_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def add_dex_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        _, private_key = update.message.text.split()
+        _, wallet_name, private_key, kyc_status = update.message.text.split()
         wallet_service = WalletService()
-        result = wallet_service.add_dex_wallet(private_key)
+        result = wallet_service.add_dex_wallet(private_key, wallet_name, kyc_status)
         if result['success']:
             await update.message.reply_text(f"Wallet agregada exitosamente: {result['address']}")
         else:
@@ -120,9 +120,9 @@ async def add_dex_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def add_cex_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        _, exchange, api_key, secret = update.message.text.split()
+        _, exchange, wallet_name, api_key, secret, password = update.message.text.split()
         wallet_service = WalletService()
-        result = wallet_service.add_cex_wallet(exchange, api_key, secret)
+        result = wallet_service.add_cex_wallet(exchange, api_key, secret, wallet_name, password)
         if result['success']:
             await update.message.reply_text(f"Wallet de {exchange} agregada exitosamente")
         else:

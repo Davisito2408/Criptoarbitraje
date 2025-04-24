@@ -43,16 +43,18 @@ class WalletService:
         except Exception as e:
             return {'error': str(e)}
         
-    def add_dex_wallet(self, private_key: str) -> Dict:
+    def add_dex_wallet(self, private_key: str, wallet_name: str, kyc_status: str) -> Dict:
         try:
             account = Account.from_key(private_key)
             address = account.address
             self.wallets[address] = {
                 'type': 'dex',
+                'name': wallet_name,
                 'private_key': private_key,
-                'address': address
+                'address': address,
+                'kyc_status': kyc_status
             }
-            return {'address': address, 'success': True}
+            return {'address': address, 'success': True, 'name': wallet_name}
         except Exception as e:
             self.logger.error(f"Error adding DEX wallet: {e}")
             return {'success': False, 'error': str(e)}
@@ -80,7 +82,7 @@ class WalletService:
             self.logger.error(f"Error getting deposit addresses: {e}")
             return {}
 
-    def add_cex_wallet(self, exchange: str, api_key: str, secret: str) -> Dict:
+    def add_cex_wallet(self, exchange: str, api_key: str, secret: str, wallet_name: str, password: str) -> Dict:
         try:
             if exchange.lower() not in ccxt.exchanges:
                 return {'success': False, 'error': 'Exchange not supported'}
@@ -88,7 +90,8 @@ class WalletService:
             exchange_class = getattr(ccxt, exchange.lower())
             exchange_instance = exchange_class({
                 'apiKey': api_key,
-                'secret': secret
+                'secret': secret,
+                'password': password
             })
             
             # Get deposit addresses for all currencies
