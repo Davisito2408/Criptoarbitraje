@@ -3,7 +3,11 @@ import os
 import logging
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from dotenv import load_dotenv
-from handlers.telegram_handler import start_command, help_command, register_exchange, scan_opportunities
+from handlers.telegram_handler import (
+    start_command, help_command, register_exchange, 
+    scan_opportunities, add_dex_wallet, add_cex_wallet,
+    get_balance, check_updates, update_bot
+)
 from services.arbitrage_service import ArbitrageService
 from utils.config import load_config
 
