@@ -17,21 +17,49 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     help_text = """
-Comandos disponibles:
-/check_fees <network> - Verificar tarifas de red (eth/bsc/polygon)
-/check_token <network> <token_address> - Verificar información de un token
-/start - Iniciar el bot
-/help - Mostrar este mensaje de ayuda
-/register_exchange <exchange> <api_key> <secret> - Registrar un nuevo exchange
-/list_exchanges - Listar exchanges registrados
-/enable_auto - Activar trading automático
-/disable_auto - Desactivar trading automático
-/add_dex_wallet <private_key> - Agregar wallet descentralizada
-/add_cex_wallet <exchange> <api_key> <secret> - Agregar wallet de exchange
-/balance <wallet_id> - Ver balance de una wallet
-/scan <symbol> - Buscar oportunidades de arbitraje (ej: /scan BTC/USDT)
-/check_updates - Check for updates
-/update_bot - Update the bot
+📘 *Comandos del Bot de Arbitraje de Criptomonedas*
+
+⛽ /check_fees <red>  
+Verifica las tarifas de red (eth / bsc / polygon)
+
+🧪 /check_token <red> <token_address>  
+Consulta información de un token en una red
+
+▶️ /start  
+Inicia el bot
+
+ℹ️ /help  
+Muestra este menú de ayuda
+
+🏦 /register_exchange <exchange> <api_key> <secret>  
+Registra un exchange con tus credenciales API
+
+📋 /list_exchanges  
+Lista todos los exchanges registrados
+
+⚙️ /enable_auto  
+Activa el trading automático
+
+⛔ /disable_auto  
+Desactiva el trading automático
+
+🔐 /add_dex_wallet <clave_privada>  
+Agrega una wallet descentralizada (DEX)
+
+🏛️ /add_cex_wallet <exchange> <api_key> <secret>  
+Agrega una wallet de un exchange centralizado (CEX)
+
+💰 /balance <wallet_id>  
+Consulta el balance de una wallet
+
+🔍 /scan <par>  
+Escanea oportunidades de arbitraje (ej: /scan BTC/USDT)
+
+🔄 /check_updates  
+Revisa si hay actualizaciones disponibles
+
+🚀 /update_bot  
+Actualiza el bot a la última versión
 """
     await update.message.reply_text(help_text)
 
