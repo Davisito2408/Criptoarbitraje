@@ -1,4 +1,3 @@
-
 from telegram import Update
 from telegram.ext import ContextTypes
 from services.arbitrage_service import ArbitrageService
@@ -22,6 +21,9 @@ Comandos disponibles:
 /list_exchanges - Listar exchanges registrados
 /enable_auto - Activar trading automático
 /disable_auto - Desactivar trading automático
+/add_dex_wallet <private_key> - Agregar wallet descentralizada
+/add_cex_wallet <exchange> <api_key> <secret> - Agregar wallet de exchange
+/balance <wallet_id> - Ver balance de una wallet
 /scan <symbol> - Buscar oportunidades de arbitraje (ej: /scan BTC/USDT)
 """
     await update.message.reply_text(help_text)

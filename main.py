@@ -30,6 +30,9 @@ def main():
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("register_exchange", register_exchange))
     application.add_handler(CommandHandler("scan", scan_opportunities))
+    application.add_handler(CommandHandler("add_dex_wallet", add_dex_wallet))
+    application.add_handler(CommandHandler("add_cex_wallet", add_cex_wallet))
+    application.add_handler(CommandHandler("balance", get_balance))
     
     # Start bot
     application.run_polling()
