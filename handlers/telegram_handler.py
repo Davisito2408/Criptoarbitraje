@@ -1,9 +1,12 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from services.arbitrage_service import ArbitrageService
+from services.wallet_service import WalletService
+from services.update_service import UpdateService
 from utils.config import load_config, save_config
 
 arbitrage_service = ArbitrageService()
+update_service = UpdateService()
 auto_trading = False
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -27,6 +30,8 @@ Comandos disponibles:
 /add_cex_wallet <exchange> <api_key> <secret> - Agregar wallet de exchange
 /balance <wallet_id> - Ver balance de una wallet
 /scan <symbol> - Buscar oportunidades de arbitraje (ej: /scan BTC/USDT)
+/check_updates - Check for updates
+/update_bot - Update the bot
 """
     await update.message.reply_text(help_text)
 
@@ -63,3 +68,12 @@ async def scan_opportunities(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await update.message.reply_text(response)
     except ValueError:
         await update.message.reply_text("Uso: /scan <symbol> (ej: /scan BTC/USDT)")
+
+
+async def check_updates(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    result = update_service.check_updates()
+    await update.message.reply_text(result['message'])
+
+async def update_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    result = update_service.update_bot()
+    await update.message.reply_text(result['message'])
