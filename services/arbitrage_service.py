@@ -59,10 +59,36 @@ class ArbitrageService:
         
         return opportunities
 
-    async def validate_trade(self, opportunity: Dict) -> bool:
+    async def validate_trade(self, opportunity: Dict) -> Dict:
         try:
             buy_ex = self.exchanges[opportunity['buy_exchange']]
             sell_ex = self.exchanges[opportunity['sell_exchange']]
+            
+            # Verificar depósitos y retiros
+            currency = opportunity['symbol'].split('/')[0]
+            
+            buy_currencies = await buy_ex.fetch_currencies()
+            sell_currencies = await sell_ex.fetch_currencies()
+            
+            if currency not in buy_currencies or currency not in sell_currencies:
+                return {'valid': False, 'reason': 'Currency not supported'}
+                
+            if not buy_currencies[currency].get('deposit', True):
+                return {'valid': False, 'reason': f'Deposits disabled on {buy_ex.id}'}
+                
+            if not sell_currencies[currency].get('withdraw', True):
+                return {'valid': False, 'reason': f'Withdrawals disabled on {sell_ex.id}'}
+            
+            # Verificar tarifas
+            buy_fees = buy_ex.fees.get('trading', {}).get('maker', 0.1) / 100
+            sell_fees = sell_ex.fees.get('trading', {}).get('taker', 0.1) / 100
+            withdrawal_fee = sell_currencies[currency].get('fee', 0)
+            
+            total_fees = (buy_fees + sell_fees + withdrawal_fee)
+            expected_profit = opportunity['profit_percent'] / 100
+            
+            if total_fees >= expected_profit:
+                return {'valid': False, 'reason': 'Fees exceed potential profit'}
             
             # Check balances and limits
             buy_balance = await buy_ex.fetch_balance()

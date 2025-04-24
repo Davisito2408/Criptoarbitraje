@@ -15,6 +15,8 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     help_text = """
 Comandos disponibles:
+/check_fees <network> - Verificar tarifas de red (eth/bsc/polygon)
+/check_token <network> <token_address> - Verificar información de un token
 /start - Iniciar el bot
 /help - Mostrar este mensaje de ayuda
 /register_exchange <exchange> <api_key> <secret> - Registrar un nuevo exchange
