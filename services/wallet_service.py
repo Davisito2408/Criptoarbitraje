@@ -57,6 +57,29 @@ class WalletService:
             self.logger.error(f"Error adding DEX wallet: {e}")
             return {'success': False, 'error': str(e)}
             
+    def get_deposit_addresses(self, exchange_instance) -> Dict:
+        try:
+            deposit_addresses = {}
+            currencies = exchange_instance.fetch_currencies()
+            
+            for currency in currencies:
+                try:
+                    address_info = exchange_instance.fetch_deposit_address(currency)
+                    if address_info:
+                        networks = address_info.get('network', 'default')
+                        if isinstance(networks, list):
+                            for network in networks:
+                                deposit_addresses[f"{currency}_{network}"] = address_info['address']
+                        else:
+                            deposit_addresses[currency] = address_info['address']
+                except:
+                    continue
+                    
+            return deposit_addresses
+        except Exception as e:
+            self.logger.error(f"Error getting deposit addresses: {e}")
+            return {}
+
     def add_cex_wallet(self, exchange: str, api_key: str, secret: str) -> Dict:
         try:
             if exchange.lower() not in ccxt.exchanges:
@@ -68,12 +91,22 @@ class WalletService:
                 'secret': secret
             })
             
-            self.wallets[f"{exchange}_{api_key[:8]}"] = {
+            # Get deposit addresses for all currencies
+            deposit_addresses = self.get_deposit_addresses(exchange_instance)
+            
+            wallet_id = f"{exchange}_{api_key[:8]}"
+            self.wallets[wallet_id] = {
                 'type': 'cex',
                 'exchange': exchange_instance,
-                'api_key': api_key
+                'api_key': api_key,
+                'deposit_addresses': deposit_addresses
             }
-            return {'success': True, 'exchange': exchange}
+            
+            return {
+                'success': True, 
+                'exchange': exchange,
+                'addresses_found': len(deposit_addresses)
+            }
         except Exception as e:
             self.logger.error(f"Error adding CEX wallet: {e}")
             return {'success': False, 'error': str(e)}
