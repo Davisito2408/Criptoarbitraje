@@ -77,3 +77,43 @@ async def check_updates(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def update_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     result = update_service.update_bot()
     await update.message.reply_text(result['message'])
+
+async def add_dex_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        _, private_key = update.message.text.split()
+        wallet_service = WalletService()
+        result = wallet_service.add_dex_wallet(private_key)
+        if result['success']:
+            await update.message.reply_text(f"Wallet agregada exitosamente: {result['address']}")
+        else:
+            await update.message.reply_text(f"Error: {result['error']}")
+    except ValueError:
+        await update.message.reply_text("Uso: /add_dex_wallet <private_key>")
+
+async def add_cex_wallet(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        _, exchange, api_key, secret = update.message.text.split()
+        wallet_service = WalletService()
+        result = wallet_service.add_cex_wallet(exchange, api_key, secret)
+        if result['success']:
+            await update.message.reply_text(f"Wallet de {exchange} agregada exitosamente")
+        else:
+            await update.message.reply_text(f"Error: {result['error']}")
+    except ValueError:
+        await update.message.reply_text("Uso: /add_cex_wallet <exchange> <api_key> <secret>")
+
+async def get_balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        _, wallet_id = update.message.text.split()
+        wallet_service = WalletService()
+        if wallet_id.startswith('0x'):
+            result = wallet_service.get_dex_balance(wallet_id)
+        else:
+            result = wallet_service.get_cex_balance(wallet_id)
+        
+        if result['success']:
+            await update.message.reply_text(f"Balance: {result['balance']}")
+        else:
+            await update.message.reply_text(f"Error: {result['error']}")
+    except ValueError:
+        await update.message.reply_text("Uso: /balance <wallet_id>")
