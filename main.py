@@ -13,7 +13,7 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-async def main():
+def main():
     # Load environment variables
     load_dotenv()
     
@@ -32,8 +32,7 @@ async def main():
     application.add_handler(CommandHandler("scan", scan_opportunities))
     
     # Start bot
-    await application.run_polling()
+    application.run_polling()
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    main()
